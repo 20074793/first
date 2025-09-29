@@ -3,17 +3,23 @@
         <script>
             //alert("Hello");//write a check function here...
 
-//function checkBaggageWeight(weight) {
- // const limit = 15; // weight limit in kg
-  //if (weight > limit) {
-  //  alert("Your baggage is overweight! The limit is " + limit + "kg.");
- // } else {
-  //  alert("Your baggage is within the allowed limit.");
-//  }
- //}
+
         </script>
     </head>
     <body>
+
+ <script>
+
+           function checkBaggageWeight(weight) {
+ const limit = 15; // weight limit in kg
+if (weight > limit) {
+    alert("Your baggage is overweight! The limit is " + limit + "kg.");
+  } else {
+  alert("Your baggage is within the allowed limit.");
+  }
+ }
+ </script>
+ 
         <input type="text" id="weight">
         <!--//replace button onclick with call to check function.-->
 <button onclick="checkBaggageWeight(document.getElementById('baggageInput').value)">
