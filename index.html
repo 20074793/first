@@ -1,6 +1,6 @@
 <HTml>
     <head>
-         <script>
+     <script>
     function checkBaggageWeight(weight) {
       const limit = 15; // weight limit in kg
       if (weight > limit) {
@@ -12,15 +12,16 @@
   </script>
     </head>
     <body>
-  <h2>Check Your Baggage</h2>
+ <input type="text" id="weight">
+        <!--//replace button onclick with call to check function.-->
+        <button onclick="checkBaggageWeight('Checking Baggage weight: '+parseInt(document.getElementById('weight').value))">Check Baggage</button>
 
-  <!-- Input and button -->
+
   <input type="number" id="baggageInput" placeholder="Enter baggage weight (kg)">
+  
   <button onclick="checkBaggageWeight(document.getElementById('baggageInput').value)">
     Check Weight
   </button>
-
-  <!-- JavaScript goes before closing body tag -->
 
 </body>
 </HTml>
