@@ -1,10 +1,15 @@
 <HTml>
     <head>
-        <script>
-            //alert("Hello");//write a check function here...
-
-
-        </script>
+         <script>
+    function checkBaggageWeight(weight) {
+      const limit = 15; // weight limit in kg
+      if (weight > limit) {
+        alert("⚠️ Your baggage is overweight! The limit is " + limit + "kg.");
+      } else {
+        alert("✅ Your baggage is within the allowed limit.");
+      }
+    }
+  </script>
     </head>
     <body>
   <h2>Check Your Baggage</h2>
@@ -16,15 +21,6 @@
   </button>
 
   <!-- JavaScript goes before closing body tag -->
-  <script>
-    function checkBaggageWeight(weight) {
-      const limit = 15; // weight limit in kg
-      if (weight > limit) {
-        alert("⚠️ Your baggage is overweight! The limit is " + limit + "kg.");
-      } else {
-        alert("✅ Your baggage is within the allowed limit.");
-      }
-    }
-  </script>
+
 </body>
 </HTml>
