@@ -1,7 +1,7 @@
 <html>
 <head>
     <script>
-        const LIMIT = 20; // allowed baggage weight
+        const LIMIT = 20; 
 
         let check = () => {
             let weight = parseInt(document.getElementById('weight').value) || 0;
@@ -11,13 +11,11 @@
                 let overLimit = weight - LIMIT;
                 alert("Overweight by " + overLimit + " kg. Please remove some baggage.");
 
-                // show input + button, pre-fill with over-limit
                 document.getElementById('removed').style.display = 'block';
                 document.getElementById('remB').style.display = 'block';
                 document.getElementById('removed').value = overLimit;
             } else {
                 alert("Weight is OK. You may proceed.");
-                // hide input + button
                 document.getElementById('removed').style.display = 'none';
                 document.getElementById('remB').style.display = 'none';
             }
@@ -47,13 +45,11 @@
     </script>
 </head>
 <body>
-    <input type="text" id="weight" placeholder="Enter baggage weight (kg)">
-    <!-- button calls check() -->
+    <input type="text" id="weight" >
     <button onclick="check()">Check Baggage</button>
 
     <p>
-        <input type="text" id="removed" placeholder="Amount to remove (kg)" style="display:none;">
-        <!-- button calls remove() -->
+        <input type="text" id="removed" style="display:none;">
         <button id="remB" onclick="remove()" style="display:none;">Remove this much baggage</button>
     </p>
 </body>
