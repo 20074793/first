@@ -1,32 +1,60 @@
-<HTml>
-    <head>
-        <script>
-            //alert("Hello");//write a check function here...
-            //update: the check function should reveal the "removed" text input
-            //if the baggage is overweight
-            //and a button to remove some
-            //the remove function should update the weight
-            //and let the user know when ok to proceed
-            let check=()=>{
-              alert('Checking Baggage weight: '+parseInt(document.getElementById('weight').value));
-              document.getElementById('removed').style='display:block;'
-              document.getElementById('remB').style='display:block;'
+<html>
+<head>
+    <script>
+        const LIMIT = 20; // allowed baggage weight
+
+        let check = () => {
+            let weight = parseInt(document.getElementById('weight').value) || 0;
+            alert("Checking baggage weight: " + weight + " kg");
+
+            if (weight > LIMIT) {
+                let overLimit = weight - LIMIT;
+                alert("Overweight by " + overLimit + " kg. Please remove some baggage.");
+
+                // show input + button, pre-fill with over-limit
+                document.getElementById('removed').style.display = 'block';
+                document.getElementById('remB').style.display = 'block';
+                document.getElementById('removed').value = overLimit;
+            } else {
+                alert("Weight is OK. You may proceed.");
+                // hide input + button
+                document.getElementById('removed').style.display = 'none';
+                document.getElementById('remB').style.display = 'none';
             }
-            let remove=()=>alert('Removing weight: '+parseInt(document.getElementById('removed').value))
-        </script>
-    </head>
-    <body>
-        <input type="text" id="weight">
-        <!--//replace button onclick with call to check function.-->
-        <button onclick="check()">Check Baggage</button>
-<p>
-        <input type="text" id="removed" style='display:none;'>
-        <!--//replace button onclick with call to check function.-->
-        <button id='remB' onclick="remove()" style='display:none;'>Remove this much baggage (kg)</button>
+        }
 
-</p>
+        let remove = () => {
+            let currentWeight = parseInt(document.getElementById('weight').value) || 0;
+            let toRemove = parseInt(document.getElementById('removed').value) || 0;
 
+            if (toRemove <= 0) {
+                alert("Enter a valid amount to remove.");
+                return;
+            }
 
+            let newWeight = currentWeight - toRemove;
+            if (newWeight < 0) newWeight = 0;
 
-    </body>
-</HTml>
+            document.getElementById('weight').value = newWeight;
+            alert("Removed " + toRemove + " kg. New weight: " + newWeight + " kg");
+
+            if (newWeight <= LIMIT) {
+                alert("Weight is now OK. You may proceed.");
+                document.getElementById('removed').style.display = 'none';
+                document.getElementById('remB').style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+    <input type="text" id="weight" placeholder="Enter baggage weight (kg)">
+    <!-- button calls check() -->
+    <button onclick="check()">Check Baggage</button>
+
+    <p>
+        <input type="text" id="removed" placeholder="Amount to remove (kg)" style="display:none;">
+        <!-- button calls remove() -->
+        <button id="remB" onclick="remove()" style="display:none;">Remove this much baggage</button>
+    </p>
+</body>
+</html>
