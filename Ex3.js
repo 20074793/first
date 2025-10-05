@@ -1,24 +1,41 @@
-let listEuler1=(a,b,l)=>0;//obviously wrong - compute the sum of multiples of a or b in list l
-let listEuler2=(a,l)=>0;//obviously wrong - compute the sum of multiples in list a found in list l
-let listEuler3=(a,l)=>0;//obviously wrong - compute the sum of multiples in list a found in list l
 
-let eulerlist=()=>
-{
-    a=2//can un-hardcode
-    b=3
-    l=[1,2,3,4,5,6,7,9,10,10,10]  //document.getElementById('l').value.split(" ").map((x=>parseInt(x)); // if l is space separated numbers
-    //call listEuler1 and alert. - compute the sum of multiples of a or b in list l
-}
-let euler2Lists=()=>
-{
-    a=[2,3]//can un-hardcode
-    l=[1,2,3,4,5,6,7,9,10,10,10]
-    //call listEuler2 and alert.
+// First version (two numbers a and b)
+function eulerlist() {
+  const a = parseInt(document.getElementById("a1").value);
+  const b = parseInt(document.getElementById("b1").value);
+  const l = document.getElementById("l").value.split(",").map(Number);
+
+  const sum = l.filter(x => x % a === 0 || x % b === 0)
+               .reduce((acc, x) => acc + x, 0);
+
+  alert("Sum = " + sum);
 }
 
-let euler2Lists1=()=>
-{
-    a=[2,3,5]//can un-hardcode
-    l=[1,2,3,4,5,6,7,9,10,10,10]
-    //call listEuler3 and alert.
+// Second version (list of divisors and list of numbers)
+function euler2Lists() {
+  const aList = document.getElementById("aList").value.split(",").map(Number);
+  const mList = document.getElementById("mList").value.split(",").map(Number);
+
+  const sum = mList.filter(x => aList.some(a => x % a === 0))
+                   .reduce((acc, x) => acc + x, 0);
+
+  alert("Sum = " + sum);
+}
+
+// Maybe another variation for testing
+function euler2Lists1() {
+  const aList = document.getElementById("aList").value.split(",").map(Number);
+  const mList = document.getElementById("mList").value.split(",").map(Number);
+
+  let sum = 0;
+  for (let x of mList) {
+    for (let a of aList) {
+      if (x % a === 0) {
+        sum += x;
+        break; // prevent double counting
+      }
+    }
+  }
+
+  alert("Sum = " + sum);
 }
