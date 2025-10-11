@@ -1,18 +1,20 @@
 // Ex5.js
 
+// Lecturer-provided strict parser
 let parse = (i) => {
   const o = parseInt(i);
   if (isNaN(o)) throw ("NaN");
   return o;
 };
 
+// Compute sum of multiples (for both modes)
 function sumOfMultiples(factors, multiples) {
-  // Disallow 0 as a factor (m % 0 is invalid)
-  if (factors.some(f => f === 0)) throw ("NaN");
+  if (factors.some(f => f === 0)) throw ("NaN"); // forbid 0 factor
   const matches = multiples.filter(m => factors.some(f => m % f === 0));
   return matches.reduce((acc, n) => acc + n, 0);
 }
 
+/* STRICT VERSION: any bad token -> corrupt */
 function processInputStrict(raw) {
   const original = (raw || "").trim();
   try {
@@ -22,38 +24,34 @@ function processInputStrict(raw) {
     const leftTokens = left.trim().split(/[,\s]+/).filter(Boolean);
     const rightTokens = right.trim().split(/[,\s]+/).filter(Boolean);
 
-    // Parse with the strict parse(i) that throws on NaN
     const factors = leftTokens.map(parse);
     const multiples = rightTokens.map(parse);
 
     if (factors.length === 0 || multiples.length === 0) throw ("NaN");
 
     const ans = sumOfMultiples(factors, multiples);
-    // Echo original input after the answer (as per lecturer examples)
     return `${ans} : ${original}`;
   } catch (_) {
     return `corrupt : ${original}`;
   }
 }
 
-
+/* LENIENT VERSION: drop bad tokens; if nothing usable -> corrupt */
 function processInputLenient(raw) {
   const original = (raw || "").trim();
-
   if (!original.includes(":")) return `corrupt : ${original}`;
 
   const [left, right] = original.split(":");
   const leftTokens = left.trim().split(/[,\s]+/).filter(Boolean);
   const rightTokens = right.trim().split(/[,\s]+/).filter(Boolean);
 
-  // Keep only valid integers; ignore bad tokens
-  const toIntSafe = (t) => {
+  const safeInt = (t) => {
     const n = parseInt(t);
     return Number.isFinite(n) ? n : null;
   };
 
-  let factors = leftTokens.map(toIntSafe).filter(n => n !== null && n !== 0);
-  let multiples = rightTokens.map(toIntSafe).filter(n => n !== null);
+  const factors = leftTokens.map(safeInt).filter(n => n !== null && n !== 0);
+  const multiples = rightTokens.map(safeInt).filter(n => n !== null);
 
   if (factors.length === 0 || multiples.length === 0) {
     return `corrupt : ${original}`;
@@ -63,11 +61,11 @@ function processInputLenient(raw) {
   return `${ans} : ${original}`;
 }
 
+// Hook to your page
 function calculate5Strict() {
   const input = document.getElementById("inputStr").value;
   document.getElementById("output").textContent = processInputStrict(input);
 }
-
 function calculate5Lenient() {
   const input = document.getElementById("inputStr").value;
   document.getElementById("output").textContent = processInputLenient(input);
