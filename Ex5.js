@@ -65,8 +65,12 @@ function processInputLenient(raw) {
 function calculate5Strict() {
   const input = document.getElementById("inputStr").value;
   document.getElementById("output").textContent = processInputStrict(input);
+    alert(output); // 👈 popup result
+
 }
 function calculate5Lenient() {
   const input = document.getElementById("inputStr").value;
   document.getElementById("output").textContent = processInputLenient(input);
+    alert(output); // 👈 popup result
+
 }
