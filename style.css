@@ -25,3 +25,6 @@ x-counter {
   margin: 8px;
   display: inline-block;
 }
+
+body { background:#f8fafc; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+h1 { color:#2563eb; }
