@@ -1,21 +1,27 @@
+/* Global page styles (do not leak into Shadow DOM) */
+:root {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
 body {
-  font-family: "Inter", system-ui, sans-serif;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
+  margin: 2rem;
+  text-align: center;
 }
 
-h2 {
-  font-weight: 500;
-  color: #222;
-  margin-bottom: 24px;
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #2563eb;
 }
 
-my-counter {
+p {
+  color: #334155;
+  margin-bottom: 1.5rem;
+}
+
+x-counter {
+  margin: 8px;
   display: inline-block;
 }

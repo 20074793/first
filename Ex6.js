@@ -5,14 +5,19 @@ class XCounter extends HTMLElement {
     super();
     const root = this.attachShadow({ mode: 'open' });
 
-    // Shadow DOM elements
+    // Create internal elements
     this.valueEl = document.createElement('span');
     this.incBtn = document.createElement('button');
     this.resetBtn = document.createElement('button');
     this.incBtn.textContent = '+';
     this.resetBtn.textContent = 'Reset';
 
-    // Styles are scoped to the shadow root
+    const wrap = document.createElement('div');
+    wrap.className = 'wrap';
+    this.valueEl.className = 'value';
+    wrap.append('Count:', this.valueEl, this.incBtn, this.resetBtn);
+
+    // Scoped styles (only apply inside this component)
     const style = document.createElement('style');
     style.textContent = `
       .wrap {
@@ -23,10 +28,19 @@ class XCounter extends HTMLElement {
         border: 1px solid #e5e7eb;
         border-radius: 8px;
         font-family: system-ui, sans-serif;
-        background: #fff;
+        background: #ffffff;
         margin: 6px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        transition: background-color 0.3s ease;
       }
-      .value { font-weight: 700; min-width: 28px; text-align: center; }
+      .wrap.flash {
+        background-color: #bbf7d0; /* light green highlight */
+      }
+      .value {
+        font-weight: 700;
+        min-width: 28px;
+        text-align: center;
+      }
       button {
         padding: 4px 10px;
         border: 1px solid #cbd5e1;
@@ -34,15 +48,11 @@ class XCounter extends HTMLElement {
         background: #f8fafc;
         cursor: pointer;
         font-size: 14px;
+        transition: background 0.2s, transform 0.1s;
       }
       button:hover { background: #e0e7ff; }
-      button:active { transform: scale(0.98); }
+      button:active { transform: scale(0.97); }
     `;
-
-    const wrap = document.createElement('div');
-    wrap.className = 'wrap';
-    this.valueEl.className = 'value';
-    wrap.append('Count:', this.valueEl, this.incBtn, this.resetBtn);
 
     root.append(style, wrap);
 
@@ -50,8 +60,9 @@ class XCounter extends HTMLElement {
     this._count = 0;
     this._initial = 0;
     this._step = 1;
+    this._wrap = wrap;
 
-    // Button actions
+    // Event handlers
     this.incBtn.addEventListener('click', () => {
       this._count += this._step;
       this._render();
@@ -60,9 +71,12 @@ class XCounter extends HTMLElement {
     this.resetBtn.addEventListener('click', () => {
       this._count = this._initial;
       this._render();
+
+      // Visual flash effect
+      this._wrap.classList.add('flash');
+      setTimeout(() => this._wrap.classList.remove('flash'), 400);
     });
 
-    // Initialize from attributes
     this._syncFromAttr();
     this._render();
   }
@@ -73,17 +87,16 @@ class XCounter extends HTMLElement {
   }
 
   _syncFromAttr() {
-    // initial
     const n = Number(this.getAttribute('initial'));
     this._initial = Number.isFinite(n) ? n : 0;
-    if (!this._initializedOnce) {
-      // Only set count from initial the first time
-      this._count = this._initial;
-      this._initializedOnce = true;
-    }
-    // step
+
     const s = Number(this.getAttribute('step'));
     this._step = Number.isFinite(s) && s > 0 ? s : 1;
+
+    if (!this._initialized) {
+      this._count = this._initial;
+      this._initialized = true;
+    }
   }
 
   _render() {
@@ -91,7 +104,6 @@ class XCounter extends HTMLElement {
   }
 }
 
-// Guard if the script is included multiple times
 if (!customElements.get('x-counter')) {
   customElements.define('x-counter', XCounter);
 }
