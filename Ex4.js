@@ -20,5 +20,5 @@ function parseList(str) {
       let input = document.getElementById("inputStr").value;
       let output = processInput(input);
       document.getElementById("output").textContent = output;
-            alert(output); 
+      alert(output); 
     }

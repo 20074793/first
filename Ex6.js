@@ -1,121 +1,97 @@
-class MyCounter extends HTMLElement {
+class XCounter extends HTMLElement {
+  static get observedAttributes() { return ['initial', 'step']; }
+
   constructor() {
     super();
+    const root = this.attachShadow({ mode: 'open' });
 
-    // Attach shadow DOM
-    const shadow = this.attachShadow({ mode: "open" });
+    // Shadow DOM elements
+    this.valueEl = document.createElement('span');
+    this.incBtn = document.createElement('button');
+    this.resetBtn = document.createElement('button');
+    this.incBtn.textContent = '+';
+    this.resetBtn.textContent = 'Reset';
 
-    // Add inner HTML to shadow root
-    shadow.innerHTML = `
-      <style>
-        :host {
-          display: inline-block;
-          font-family: "Inter", system-ui, sans-serif;
-        }
-
-        .card {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          padding: 20px 30px;
-          border-radius: 16px;
-          background: linear-gradient(145deg, #ffffff, #e6e9ef);
-          box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), 
-                      -2px -2px 6px rgba(255, 255, 255, 0.8);
-          transition: transform 0.2s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-          transform: translateY(-3px);
-          box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.15), 
-                      -3px -3px 8px rgba(255, 255, 255, 0.9);
-        }
-
-        button {
-          background: #4e6ef2;
-          color: #fff;
-          border: none;
-          border-radius: 8px;
-          padding: 10px 20px;
-          font-size: 16px;
-          cursor: pointer;
-          transition: background 0.3s ease, transform 0.1s ease;
-        }
-
-        button:hover {
-          background: #3654d1;
-        }
-
-        button:active {
-          transform: scale(0.97);
-        }
-
-        .reset {
-          background: #e74c3c;
-        }
-
-        .reset:hover {
-          background: #c0392b;
-        }
-
-        .count {
-          font-size: 20px;
-          font-weight: 600;
-          color: #4e6ef2;
-        }
-      </style>
-
-      <div class="card">
-        <div class="count">Count: <span id="count">0</span></div>
-        <div class="buttons">
-          <button id="btn">Click Me</button>
-          <button id="reset" class="reset">Reset</button>
-        </div>
-      </div>
+    // Styles are scoped to the shadow root
+    const style = document.createElement('style');
+    style.textContent = `
+      .wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-family: system-ui, sans-serif;
+        background: #fff;
+        margin: 6px;
+      }
+      .value { font-weight: 700; min-width: 28px; text-align: center; }
+      button {
+        padding: 4px 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #f8fafc;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      button:hover { background: #e0e7ff; }
+      button:active { transform: scale(0.98); }
     `;
 
-    // Select elements inside shadow root
-    this._btn = shadow.querySelector("#btn");
-    this._resetBtn = shadow.querySelector("#reset");
-    this._countEl = shadow.querySelector("#count");
+    const wrap = document.createElement('div');
+    wrap.className = 'wrap';
+    this.valueEl.className = 'value';
+    wrap.append('Count:', this.valueEl, this.incBtn, this.resetBtn);
+
+    root.append(style, wrap);
+
+    // Internal state
     this._count = 0;
+    this._initial = 0;
+    this._step = 1;
 
-    // Bind methods
-    this._onClick = this._onClick.bind(this);
-    this._onReset = this._onReset.bind(this);
+    // Button actions
+    this.incBtn.addEventListener('click', () => {
+      this._count += this._step;
+      this._render();
+    });
+
+    this.resetBtn.addEventListener('click', () => {
+      this._count = this._initial;
+      this._render();
+    });
+
+    // Initialize from attributes
+    this._syncFromAttr();
+    this._render();
   }
 
-  // First function: increment counter
-  _onClick() {
-    this._count++;
-    this._countEl.textContent = String(this._count);
-    this._countEl.animate(
-      [{ transform: "scale(1)" }, { transform: "scale(1.3)" }, { transform: "scale(1)" }],
-      { duration: 150 }
-    );
+  attributeChangedCallback() {
+    this._syncFromAttr();
+    this._render();
   }
 
-  // Second function: reset counter
-  _onReset() {
-    this._count = 0;
-    this._countEl.textContent = "0";
-    this._countEl.animate(
-      [{ opacity: 0.5 }, { opacity: 1 }],
-      { duration: 200 }
-    );
+  _syncFromAttr() {
+    // initial
+    const n = Number(this.getAttribute('initial'));
+    this._initial = Number.isFinite(n) ? n : 0;
+    if (!this._initializedOnce) {
+      // Only set count from initial the first time
+      this._count = this._initial;
+      this._initializedOnce = true;
+    }
+    // step
+    const s = Number(this.getAttribute('step'));
+    this._step = Number.isFinite(s) && s > 0 ? s : 1;
   }
 
-  connectedCallback() {
-    this._btn.addEventListener("click", this._onClick);
-    this._resetBtn.addEventListener("click", this._onReset);
-  }
-
-  disconnectedCallback() {
-    this._btn.removeEventListener("click", this._onClick);
-    this._resetBtn.removeEventListener("click", this._onReset);
+  _render() {
+    this.valueEl.textContent = String(this._count);
   }
 }
 
-customElements.define("my-counter", MyCounter);
+// Guard if the script is included multiple times
+if (!customElements.get('x-counter')) {
+  customElements.define('x-counter', XCounter);
+}
